@@ -1,31 +1,43 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 
-function App() {
-  const [name, setName] = useState('')
-  // useRef persists values accross renders
-  //const inputRef = useRef()
-  const prevName = useRef()
+export default function App() {
+  const [number, setNumber] = useState(0)
+  const [dark, setDark] = useState(false)
 
-  /* function focus() {
-    // works similarly to .querySelector() but it DOES NOT updates the state of the component
-    inputRef.current.focus()
-    inputRef.current.value = 'Some Value'
-  } */
+  // useMemo() it saves from having to re-render the whole component when there's a value that didn't change
+  // only use it when the function is large. It can cause performance issues
+  const doubleNumber = useMemo(() => {
+    return slowFunction(number)
+    // it takes a dependency to watch for changes
+  }, [number])
 
-  // useRef() is also useful to store the previous value
+  const themeStyles = {
+    backgroundColor: dark ? 'black' : 'white',
+    color: dark ? 'white' : 'black',
+  }
 
   useEffect(() => {
-    prevName.current = name
-  }, [name])
+    console.log('Theme Changed')
+  }, [themeStyles])
 
   return (
     <>
-      <input value={name} onChange={(e) => setName(e.target.value)} />
-      <div>
-        My name is {name} and used to be {prevName.current}{' '}
-      </div>
+      <input
+        type='number'
+        value={number}
+        onChange={(e) => setNumber(parseInt(e.target.value))}
+      />
+      <button onClick={() => setDark((prevDark) => !prevDark)}>
+        Change Theme
+      </button>
+      <div style={themeStyles}>{doubleNumber}</div>
     </>
   )
 }
 
-export default App
+function slowFunction(num) {
+  console.log('Calling Slow Function')
+  for (let i = 0; i <= 1000000000; i++) {
+    return num * 2
+  }
+}
