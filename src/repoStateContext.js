@@ -1,4 +1,0 @@
-const repoState = {
-  done: '✅',
-  todo: '⭕',
-}
