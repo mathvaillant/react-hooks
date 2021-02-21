@@ -1,0 +1,4 @@
+const repoState = {
+  done: '✅',
+  todo: '⭕',
+}
